@@ -1,0 +1,21 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/inventario_db
+    username: postgres
+    password: admin
+  jpa:
+    hibernate:
+      ddl-auto: update   # en prod: validate
+    open-in-view: false
+    properties:
+      hibernate.format_sql: true
+
+management:
+  endpoints.web.exposure.include: health,info
+  endpoint.health.show-details: when_authorized
+
+logging.level.org.hibernate.SQL: warn
+

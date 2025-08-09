@@ -1,0 +1,23 @@
+server:
+  port: 8083
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/facturacion_db
+    username: postgres
+    password: admin
+  jpa:
+    hibernate.ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate.format_sql: true
+
+management:
+  endpoints.web.exposure.include: health,info
+
+# Precios por tonelada (puedes mover a DB luego)
+app:
+  central-base-url: http://localhost:8081
+  precios:
+    cacao: 150.0
+    cafe:  200.0
