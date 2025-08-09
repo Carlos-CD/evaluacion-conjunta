@@ -1,0 +1,70 @@
+version: "3.9"
+
+services:
+  # Bases de datos
+  postgres:
+    image: postgres:16
+    container_name: pg-agro
+    environment:
+      POSTGRES_USER: ${PG_USER:-postgres}
+      POSTGRES_PASSWORD: ${PG_PASS:-admin}
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER:-postgres}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  mysql:
+    image: mysql:8
+    container_name: mysql-agro
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASS:-admin}
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysqldata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  mariadb:
+    image: mariadb:11
+    container_name: mariadb-agro
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASS:-admin}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mariadbdata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbit-agro
+    ports:
+      - "5672:5672"   # AMQP
+      - "15672:15672" # UI
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Microservicios
+
+volumes:
+  pgdata:
+  mysqldata:
+  mariadbdata:
